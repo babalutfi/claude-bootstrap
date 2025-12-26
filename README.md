@@ -102,6 +102,8 @@ Define before you build:
 |-------|---------|
 | `base.md` | Universal patterns, constraints, atomic todos format |
 | `security.md` | OWASP patterns, secrets management, security testing |
+| `ui-web.md` | Web UI - glassmorphism, Tailwind, dark mode, accessibility |
+| `ui-mobile.md` | Mobile UI - React Native, iOS/Android patterns, touch targets |
 | `project-tooling.md` | gh, vercel, supabase CLI integration |
 | `python.md` | Python + ruff + mypy + pytest |
 | `typescript.md` | TypeScript strict + eslint + jest |
