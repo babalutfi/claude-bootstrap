@@ -80,6 +80,20 @@ Every line of code is a liability. The goal is software simple enough that any e
 - Dependency scanning on every PR
 - Pre-commit security checks
 
+### Centralized Credentials
+
+Store all your API keys in one file (e.g., `~/Documents/Access.txt`):
+
+```
+OpenAI API: sk-proj-xxx
+Claude API: sk-ant-xxx
+Stripe: sk_test_xxx
+Supabase url: https://xxx.supabase.co
+Anon key: eyJxxx
+```
+
+When starting a project, Claude asks for your access file location, auto-detects keys by pattern, validates them, and creates your `.env`.
+
 ### AI-First Architecture
 
 For applications where LLMs handle core logic:
@@ -96,23 +110,53 @@ Define before you build:
 2. **Atomic todos** with validation criteria and test cases
 3. **Move, don't delete** - Completed todos go to `completed.md` for reference
 
-## Skills Included
+## Skills Included (22 Skills)
 
+### Core Skills
 | Skill | Purpose |
 |-------|---------|
-| `base.md` | Universal patterns, constraints, atomic todos format |
+| `base.md` | Universal patterns, constraints, atomic todos, credentials workflow |
 | `security.md` | OWASP patterns, secrets management, security testing |
-| `ui-web.md` | Web UI - glassmorphism, Tailwind, dark mode, accessibility |
-| `ui-mobile.md` | Mobile UI - React Native, iOS/Android patterns, touch targets |
-| `ui-testing.md` | Visual testing - catch invisible buttons, broken layouts, contrast |
-| `project-tooling.md` | gh, vercel, supabase CLI integration |
+| `credentials.md` | Centralized API key management from Access.txt |
+| `session-management.md` | Context preservation, tiered summarization, resumability |
+| `project-tooling.md` | gh, vercel, supabase, render CLI + deployment platform setup |
+
+### Language & Framework Skills
+| Skill | Purpose |
+|-------|---------|
 | `python.md` | Python + ruff + mypy + pytest |
 | `typescript.md` | TypeScript strict + eslint + jest |
 | `nodejs-backend.md` | Express/Fastify patterns, repositories |
 | `react-web.md` | React + hooks + React Query + Zustand |
 | `react-native.md` | Mobile patterns, platform-specific code |
+
+### UI Skills
+| Skill | Purpose |
+|-------|---------|
+| `ui-web.md` | Web UI - glassmorphism, Tailwind, dark mode, accessibility |
+| `ui-mobile.md` | Mobile UI - React Native, iOS/Android patterns, touch targets |
+| `ui-testing.md` | Visual testing - catch invisible buttons, broken layouts, contrast |
+
+### AI & Agentic Skills
+| Skill | Purpose |
+|-------|---------|
+| `agentic-development.md` | Build AI agents - Pydantic AI (Python), Claude SDK (Node.js) |
 | `llm-patterns.md` | AI-first apps, LLM testing, prompt management |
 | `ai-models.md` | Latest models reference - Claude, OpenAI, Gemini, Eleven Labs, Replicate |
+
+### Database & Backend Skills
+| Skill | Purpose |
+|-------|---------|
+| `supabase.md` | Core Supabase CLI, migrations, RLS, Edge Functions |
+| `supabase-nextjs.md` | Next.js + Supabase + Drizzle ORM |
+| `supabase-python.md` | FastAPI + Supabase + SQLAlchemy/SQLModel |
+| `supabase-node.md` | Express/Hono + Supabase + Drizzle ORM |
+
+### Integration Skills
+| Skill | Purpose |
+|-------|---------|
+| `web-payments.md` | Stripe Checkout, subscriptions, webhooks, customer portal |
+| `reddit-api.md` | Reddit API with PRAW (Python) and Snoowrap (Node.js) |
 
 ## Usage Patterns
 
