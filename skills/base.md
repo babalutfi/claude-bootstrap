@@ -190,6 +190,32 @@ Validate email format on the signup form before submission. Show inline error if
 
 ---
 
+## Credentials Management (Non-Negotiable)
+
+When a project needs API keys, always ask the user for their centralized access file first.
+
+### Workflow
+```
+1. Ask: "Do you have an access keys file? (e.g., ~/Documents/Access.txt)"
+2. Read and parse the file for known key patterns
+3. Validate keys are working
+4. Create project .env with found keys
+5. Report missing keys and where to get them
+```
+
+### Key Patterns to Detect
+| Service | Pattern | Env Variable |
+|---------|---------|--------------|
+| OpenAI | `sk-proj-*` | `OPENAI_API_KEY` |
+| Claude | `sk-ant-*` | `ANTHROPIC_API_KEY` |
+| Render | `rnd_*` | `RENDER_API_KEY` |
+| Replicate | `r8_*` | `REPLICATE_API_TOKEN` |
+| Reddit | client_id + secret | `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET` |
+
+See `credentials.md` for full parsing logic and validation commands.
+
+---
+
 ## Security (Non-Negotiable)
 
 Every project must meet these security requirements. See `security.md` skill for detailed patterns.
