@@ -67,11 +67,13 @@ Use these patterns to identify keys in the file:
 | Render | `rnd_*` | `RENDER_API_KEY` |
 | Eleven Labs | `sk_*` (not sk-ant/sk-proj) | `ELEVEN_LABS_API_KEY` |
 | Replicate | `r8_*` | `REPLICATE_API_TOKEN` |
-| Supabase | URL + `eyJ*` (JWT) | `SUPABASE_URL`, `SUPABASE_ANON_KEY` |
+| Supabase | URL + `eyJ*` (JWT) | `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` |
 | Reddit | client_id + secret pair | `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET` |
 | GitHub | `ghp_*` or `github_pat_*` | `GITHUB_TOKEN` |
 | Vercel | `*_*` (from vercel.com) | `VERCEL_TOKEN` |
-| Stripe | `sk_live_*` or `sk_test_*` | `STRIPE_SECRET_KEY` |
+| Stripe (Test) | `sk_test_*`, `pk_test_*` | `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY` |
+| Stripe (Live) | `sk_live_*`, `pk_live_*` | `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY` |
+| Stripe Webhook | `whsec_*` | `STRIPE_WEBHOOK_SECRET` |
 | Twilio | `SK*` + Account SID | `TWILIO_API_KEY`, `TWILIO_ACCOUNT_SID` |
 | SendGrid | `SG.*` | `SENDGRID_API_KEY` |
 | AWS | `AKIA*` + secret | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` |
@@ -101,7 +103,21 @@ def parse_credentials_file(file_path: str) -> dict[str, str]:
         'ELEVEN_LABS_API_KEY': r'sk_[a-f0-9]{40,}',
         'GITHUB_TOKEN': r'ghp_[A-Za-z0-9]+|github_pat_[A-Za-z0-9_]+',
         'STRIPE_SECRET_KEY': r'sk_(live|test)_[A-Za-z0-9]+',
+        'STRIPE_PUBLISHABLE_KEY': r'pk_(live|test)_[A-Za-z0-9]+',
+        'STRIPE_WEBHOOK_SECRET': r'whsec_[A-Za-z0-9]+',
     }
+
+    # Supabase requires special handling (URL + JWT tokens)
+    supabase_url = re.search(r'https://[a-z0-9]+\.supabase\.co', content)
+    anon_key = re.search(r'anon[^:]*:\s*(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)', content, re.I)
+    service_role = re.search(r'service.?role[^:]*:\s*(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)', content, re.I)
+
+    if supabase_url:
+        credentials['SUPABASE_URL'] = supabase_url.group(0)
+    if anon_key:
+        credentials['SUPABASE_ANON_KEY'] = anon_key.group(1)
+    if service_role:
+        credentials['SUPABASE_SERVICE_ROLE_KEY'] = service_role.group(1)
 
     for env_var, pattern in patterns.items():
         match = re.search(pattern, content)
