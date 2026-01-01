@@ -156,7 +156,7 @@ Define before you build:
 2. **Atomic todos** with validation criteria and test cases
 3. **Move, don't delete** - Completed todos go to `completed.md` for reference
 
-## Skills Included (31 Skills)
+## Skills Included (32 Skills)
 
 ### Core Skills
 | Skill | Purpose |
@@ -195,6 +195,7 @@ Define before you build:
 ### Database & Backend Skills
 | Skill | Purpose |
 |-------|---------|
+| `database-schema.md` | Schema awareness - read before coding, type generation, prevent column errors |
 | `supabase.md` | Core Supabase CLI, migrations, RLS, Edge Functions |
 | `supabase-nextjs.md` | Next.js + Supabase + Drizzle ORM |
 | `supabase-python.md` | FastAPI + Supabase + SQLAlchemy/SQLModel |
