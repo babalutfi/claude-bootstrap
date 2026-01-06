@@ -675,6 +675,27 @@ Create `.pre-commit-config.yaml`
 **For TypeScript/JavaScript projects** (if .husky/ missing):
 Set up Husky + lint-staged
 
+### Step 7b: Install pre-push code review hook
+
+**Always install the pre-push hook for code review enforcement:**
+
+```bash
+# Check if .git exists
+if [ -d ".git" ]; then
+    # Copy pre-push hook from ~/.claude/hooks/
+    cp ~/.claude/hooks/pre-push .git/hooks/pre-push
+    chmod +x .git/hooks/pre-push
+    echo "✓ Pre-push code review hook installed"
+fi
+```
+
+This hook:
+- Runs `/code-review` before every `git push`
+- Blocks push if 🔴 Critical or 🟠 High severity issues found
+- Allows push with advisory for 🟡 Medium and 🟢 Low issues
+
+To disable: `rm .git/hooks/pre-push`
+
 ### Step 8: GitHub repository setup (if selected and not already configured)
 
 **Create new repository:**
@@ -716,6 +737,7 @@ Updated:
   - base.md (updated)
   - typescript.md (updated)
   - react-web.md (updated)
+✓ Pre-push code review hook (installed/updated)
 
 Added:
 ✓ llm-patterns.md (new skill added)
@@ -736,6 +758,7 @@ Created:
 ✓ scripts/verify-tooling.sh
 ✓ .github/workflows/quality.yml
 ✓ Pre-commit hooks configured
+✓ Pre-push code review hook (blocks on Critical/High issues)
 ✓ GitHub repository: https://github.com/[owner]/[repo]
 ```
 
