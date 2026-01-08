@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- **Android Java skill** - MVVM architecture, ViewBinding, Espresso testing, GitHub Actions CI (contributed by @tyr4n7)
+
 ---
 
 ## [2.0.0] - 2026-01-08

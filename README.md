@@ -393,7 +393,7 @@ Define before you build:
 2. **Atomic todos** with validation criteria and test cases
 3. **Move, don't delete** - Completed todos go to `completed.md` for reference
 
-## Skills Included (41 Skills)
+## Skills Included (42 Skills)
 
 ### Core Skills
 | Skill | Purpose |
@@ -417,6 +417,7 @@ Define before you build:
 | `nodejs-backend.md` | Express/Fastify patterns, repositories |
 | `react-web.md` | React + hooks + React Query + Zustand |
 | `react-native.md` | Mobile patterns, platform-specific code |
+| `android-java.md` | Android Java with MVVM, ViewBinding, Espresso testing |
 
 ### UI Skills
 | Skill | Purpose |
