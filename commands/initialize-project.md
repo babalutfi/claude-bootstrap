@@ -58,14 +58,185 @@ find android -name "*.kt" -type f 2>/dev/null | head -1
 ```
 
 Based on findings, determine:
-- **New project**: No CLAUDE.md, no .claude/skills/
+- **New project**: No CLAUDE.md, no .claude/skills/, no code files
 - **Existing project with skills**: Has .claude/skills/ - offer to UPDATE
-- **Existing codebase without skills**: Has code but no Claude setup - offer to ADD
+- **Existing codebase without skills**: Has code but no Claude setup - **AUTO-RUN ANALYSIS**
 
 Inform the user:
 - "Detected new project - will do full setup"
 - "Detected existing Claude project - will update skills and add any missing structure"
-- "Detected existing codebase - will add Claude setup while preserving your code"
+- "Detected existing codebase - **analyzing before making changes...**"
+
+**For existing codebases without Claude setup, AUTOMATICALLY proceed to Phase 1b.**
+
+---
+
+## Phase 1b: Analyze Existing Codebase (Auto-triggered)
+
+**This phase runs automatically when an existing codebase is detected without Claude setup.**
+
+### Step 1: Repository Structure Detection
+
+```bash
+echo "=== Analyzing Repository Structure ===" && \
+
+# Detect repo type
+if [ -d "packages" ] || [ -d "apps" ] || grep -q '"workspaces"' package.json 2>/dev/null; then
+    REPO_TYPE="MONOREPO"
+elif [ -d "frontend" ] && [ -d "backend" ]; then
+    REPO_TYPE="FULL_STACK"
+elif [ -d "src" ] && grep -q '"react\|vue\|angular"' package.json 2>/dev/null; then
+    REPO_TYPE="FRONTEND"
+elif [ -f "pyproject.toml" ] || grep -q '"express\|fastify"' package.json 2>/dev/null; then
+    REPO_TYPE="BACKEND"
+else
+    REPO_TYPE="STANDARD"
+fi
+echo "Repo Type: $REPO_TYPE"
+
+# Directory structure (3 levels, excluding noise)
+find . -type d -maxdepth 3 \
+    -not -path "*/node_modules/*" \
+    -not -path "*/.git/*" \
+    -not -path "*/venv/*" \
+    -not -path "*/__pycache__/*" \
+    -not -path "*/dist/*" \
+    -not -path "*/build/*" \
+    2>/dev/null | head -30
+```
+
+### Step 2: Tech Stack Detection
+
+```bash
+echo "=== Tech Stack ===" && \
+
+# Primary language/framework
+[ -f "package.json" ] && echo "JavaScript/TypeScript project"
+[ -f "tsconfig.json" ] && echo "  → TypeScript configured"
+[ -f "pyproject.toml" ] && echo "Python project"
+[ -f "pubspec.yaml" ] && echo "Flutter project"
+[ -d "android" ] && echo "Android project"
+
+# Frameworks (from package.json)
+if [ -f "package.json" ]; then
+    grep -q '"react"' package.json && echo "  → React"
+    grep -q '"next"' package.json && echo "  → Next.js"
+    grep -q '"express"' package.json && echo "  → Express"
+    grep -q '"fastify"' package.json && echo "  → Fastify"
+fi
+
+# Frameworks (from pyproject.toml)
+if [ -f "pyproject.toml" ]; then
+    grep -q "fastapi" pyproject.toml && echo "  → FastAPI"
+    grep -q "django" pyproject.toml && echo "  → Django"
+    grep -q "flask" pyproject.toml && echo "  → Flask"
+fi
+```
+
+### Step 3: Guardrails Audit
+
+```bash
+echo "=== Guardrails Status ===" && \
+
+# Pre-commit hooks
+echo "Pre-commit Hooks:"
+[ -d ".husky" ] && echo "  ✓ Husky installed" || echo "  ✗ Husky NOT installed"
+[ -f ".pre-commit-config.yaml" ] && echo "  ✓ pre-commit framework" || echo "  ✗ pre-commit NOT installed"
+
+# Linting
+echo "Linting:"
+(grep -q '"eslint"' package.json 2>/dev/null && echo "  ✓ ESLint") || \
+(grep -q "ruff" pyproject.toml 2>/dev/null && echo "  ✓ Ruff") || \
+echo "  ✗ No linter detected"
+
+# Formatting
+echo "Formatting:"
+(grep -q '"prettier"' package.json 2>/dev/null && echo "  ✓ Prettier") || \
+(grep -q "ruff\|black" pyproject.toml 2>/dev/null && echo "  ✓ Ruff/Black") || \
+echo "  ✗ No formatter detected"
+
+# Type checking
+echo "Type Checking:"
+([ -f "tsconfig.json" ] && echo "  ✓ TypeScript") || \
+(grep -q "mypy" pyproject.toml 2>/dev/null && echo "  ✓ mypy") || \
+echo "  ✗ No type checker detected"
+
+# Commit validation
+echo "Commit Validation:"
+([ -f "commitlint.config.js" ] && echo "  ✓ commitlint") || \
+(grep -q "conventional-pre-commit" .pre-commit-config.yaml 2>/dev/null && echo "  ✓ conventional-pre-commit") || \
+echo "  ✗ No commit validation"
+
+# CI/CD
+echo "CI/CD:"
+[ -d ".github/workflows" ] && echo "  ✓ GitHub Actions" || echo "  ✗ No GitHub Actions"
+```
+
+### Step 4: Convention Detection
+
+```bash
+echo "=== Conventions Detected ===" && \
+
+# File naming pattern
+echo "File Naming:"
+ls src/**/*.ts 2>/dev/null | head -3 || ls src/**/*.py 2>/dev/null | head -3
+
+# Import style
+echo "Import Style:"
+grep -h "^import" src/**/*.ts 2>/dev/null | head -3 || \
+grep -h "^from\|^import" src/**/*.py 2>/dev/null | head -3
+
+# Test location
+echo "Test Location:"
+[ -d "tests" ] && echo "  Separate tests/ directory"
+[ -d "__tests__" ] && echo "  __tests__/ directory"
+find . -name "*.test.*" -o -name "*.spec.*" 2>/dev/null | head -1 && echo "  Colocated tests"
+```
+
+### Step 5: Generate Analysis Summary
+
+After running the analysis, present this summary to the user:
+
+```markdown
+## Repository Analysis Complete
+
+**Type:** [Monorepo | Full-Stack | Frontend | Backend | Standard]
+**Language:** [TypeScript | Python | Flutter | ...]
+**Framework:** [React | FastAPI | ...]
+
+### Guardrails Status
+
+| Category | Status | Recommendation |
+|----------|--------|----------------|
+| Pre-commit hooks | ✗ Missing | Add Husky (JS) or pre-commit (Python) |
+| Linting | ✓ ESLint | - |
+| Formatting | ✗ Missing | Add Prettier |
+| Type checking | ✓ TypeScript | - |
+| Commit validation | ✗ Missing | Add commitlint |
+
+### Conventions I'll Follow
+- File naming: camelCase
+- Imports: Absolute (@/...)
+- Tests: Colocated (*.test.ts)
+```
+
+### Step 6: Present Options
+
+After showing the analysis, ask:
+
+> **I've analyzed this codebase. Here's what I found:** [summary above]
+>
+> What would you like me to do?
+> 1. **Add Claude skills only** - Add skills, preserve everything else
+> 2. **Add skills + missing guardrails** - Also setup Husky/pre-commit, commitlint, etc.
+> 3. **Full setup** - Skills, guardrails, project specs structure, CI/CD
+> 4. **Just show analysis** - Don't change anything yet
+
+**Based on user choice:**
+- Option 1 → Skip to Phase 4, only copy skills
+- Option 2 → Phase 4 + guardrails setup from `existing-repo` skill
+- Option 3 → Full Phase 4 execution
+- Option 4 → End here, user can run `/initialize-project` again later
 
 ---
 
@@ -199,6 +370,9 @@ cp -r ~/.claude/skills/session-management/ .claude/skills/
 - `security/` → `.claude/skills/security/`
 - `project-tooling/` → `.claude/skills/project-tooling/`
 - `session-management/` → `.claude/skills/session-management/`
+
+**For existing codebases (detected in Phase 1b):**
+- `existing-repo/` → `.claude/skills/existing-repo/` - Structure preservation, guardrails setup
 
 **Based on language:**
 - Python → copy `python/`

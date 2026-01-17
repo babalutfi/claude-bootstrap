@@ -6,6 +6,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2.2.0] - 2026-01-17
+
+### Added
+
+#### Existing Repository Support
+- **Existing Repo skill** - Analyze existing codebases, maintain structure, setup guardrails
+  - Repo structure detection (monorepo, full-stack, frontend-only, backend-only)
+  - Tech stack auto-detection (TypeScript, Python, Flutter, Android, etc.)
+  - Convention detection (naming, imports, exports, test patterns)
+  - Guardrails audit (pre-commit hooks, linting, formatting, type checking)
+  - Structure preservation rules - work within existing patterns, don't reorganize
+  - Gradual implementation strategy for adding guardrails to legacy projects
+  - Cross-repo coordination for separate frontend/backend repos
+
+- **`/analyze-repo` command** - Quick analysis of any existing repository
+  - Directory structure mapping
+  - Guardrails status audit (Husky, pre-commit, ESLint, Ruff, commitlint, etc.)
+  - Convention detection and documentation
+  - Generates analysis report with recommendations
+  - Offers to add missing guardrails
+  - **Auto-triggered** by `/initialize-project` when existing codebase detected
+
+#### Initialize Project Enhancement
+- **Auto-analysis for existing codebases** - `/initialize-project` now automatically analyzes existing repos before making changes
+- **User choice after analysis** - Options: skills only, skills + guardrails, full setup, or just view analysis
+- **Existing-repo skill auto-copied** - When working with existing codebases
+
+#### Guardrails Setup (for JS/TS and Python)
+- **Husky + lint-staged** setup for JavaScript/TypeScript projects
+- **pre-commit framework** setup for Python projects
+- **commitlint** configuration for conventional commits
+- **ESLint 9 flat config** template
+- **Ruff + mypy** configuration for Python
+
+### Changed
+- Total skills increased from 50 to **51 skills**
+- Updated README with `/analyze-repo` usage pattern
+
+---
+
 ## [2.1.0] - 2026-01-17
 
 ### Added

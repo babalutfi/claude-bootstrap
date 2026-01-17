@@ -393,7 +393,7 @@ Define before you build:
 2. **Atomic todos** with validation criteria and test cases
 3. **Move, don't delete** - Completed todos go to `completed.md` for reference
 
-## Skills Included (50 Skills)
+## Skills Included (51 Skills)
 
 ### Core Skills
 | Skill | Purpose |
@@ -409,6 +409,7 @@ Define before you build:
 | `credentials.md` | Centralized API key management from Access.txt |
 | `session-management.md` | Context preservation, tiered summarization, resumability |
 | `project-tooling.md` | gh, vercel, supabase, render CLI + deployment platform setup |
+| `existing-repo.md` | Analyze existing repos, maintain structure, setup guardrails (Husky, pre-commit, commitlint) |
 
 ### Language & Framework Skills
 | Skill | Purpose |
@@ -489,6 +490,28 @@ cd my-existing-app
 claude
 > /initialize-project
 # Skills updated, existing config preserved
+```
+
+### Existing Codebase (Auto-Analysis!)
+```bash
+cd unfamiliar-codebase
+claude
+> /initialize-project
+# Auto-detects existing code → runs analysis first
+# Shows: structure, tech stack, guardrails status, conventions
+# Asks: "What would you like me to do?"
+#   1. Add Claude skills only
+#   2. Add skills + missing guardrails
+#   3. Full setup
+#   4. Just show analysis
+```
+
+### Standalone Analysis
+```bash
+cd any-repo
+claude
+> /analyze-repo
+# Run analysis anytime without making changes
 ```
 
 ### Update Skills Globally
@@ -713,7 +736,7 @@ Key principles:
 
 See [CHANGELOG.md](CHANGELOG.md) for version history and updates.
 
-**Latest: v2.1.0** - 50 skills with database diversity, mobile dev, and Codex code review
+**Latest: v2.2.0** - 51 skills with existing repo analysis, guardrails setup, and `/analyze-repo` command
 
 ## License
 
