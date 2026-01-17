@@ -5,9 +5,99 @@ description: Mandatory code reviews via /code-review before commits and deploys
 
 # Code Review Skill
 
-*Load with: base.md*
+*Load with: base.md + [codex-review.md for OpenAI Codex option]*
 
-**Purpose:** Enforce automated code reviews as a mandatory guardrail before every commit and deployment. Uses the official Claude Code Review plugin for comprehensive analysis.
+**Purpose:** Enforce automated code reviews as a mandatory guardrail before every commit and deployment. Choose between Claude, OpenAI Codex, or both for comprehensive analysis.
+
+---
+
+## Review Engine Choice
+
+When running `/code-review`, users can choose their preferred review engine:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  CODE REVIEW - Choose Your Engine                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ○ Claude (default)                                             │
+│    Built-in, no extra setup, full conversation context          │
+│                                                                 │
+│  ○ OpenAI Codex CLI                                             │
+│    GPT-5.2-Codex specialized for code review, 88% detection     │
+│    Requires: npm install -g @openai/codex                       │
+│                                                                 │
+│  ○ Both (recommended for critical PRs)                          │
+│    Run both engines, compare findings, catch more issues        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Engine Comparison
+
+| Aspect | Claude | Codex | Both |
+|--------|--------|-------|------|
+| **Setup** | None | Install CLI + auth | Both setups |
+| **Speed** | Fast | Fast | 2x time |
+| **Context** | Full conversation | Fresh per review | N/A |
+| **Specialization** | General purpose | Code review trained | Combined |
+| **Best for** | Quick reviews | Critical PRs, CI/CD | High-stakes code |
+
+### Set Default Engine
+
+```toml
+# ~/.claude/settings.toml or project CLAUDE.md
+[code-review]
+default_engine = "claude"  # Options: claude, codex, both
+```
+
+### Usage Examples
+
+```bash
+# Use default engine
+/code-review
+
+# Explicitly choose engine
+/code-review --engine claude
+/code-review --engine codex
+/code-review --engine both
+
+# Quick shortcuts
+/code-review              # Uses default
+/code-review --codex      # Use Codex
+/code-review --both       # Use both engines
+```
+
+---
+
+## Dual Engine Output (Both Mode)
+
+When using both engines, findings are compared and deduplicated:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  CODE REVIEW RESULTS - DUAL ENGINE                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ✅ AGREED (Found by both):                                     │
+│  🔴 SQL injection in auth.ts:45                                 │
+│  🟡 Missing error handling in api.ts:112                        │
+│                                                                 │
+│  🔷 CLAUDE ONLY:                                                │
+│  🟠 Potential race condition in worker.ts:89                    │
+│  🟢 Consider extracting helper function                         │
+│                                                                 │
+│  🔶 CODEX ONLY:                                                 │
+│  🟠 Memory leak - unclosed stream in upload.ts:34               │
+│  🟡 N+1 query pattern in orders.ts:156                          │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│  SUMMARY                                                        │
+│  Agreed: 2 | Claude only: 2 | Codex only: 2                     │
+│  Critical: 1 | High: 2 | Medium: 2 | Low: 1                     │
+│  Status: ❌ BLOCKED - Fix critical/high issues                  │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -151,9 +241,43 @@ chmod +x .git/hooks/pre-commit
 
 ---
 
+## Codex CLI Setup (For Codex/Both Modes)
+
+If you want to use Codex or Both modes, install the Codex CLI:
+
+```bash
+# Prerequisites: Node.js 22+
+node --version  # Must be 22+
+
+# Install Codex CLI
+npm install -g @openai/codex
+
+# Authenticate (choose one):
+# Option 1: ChatGPT subscription (Plus, Pro, Team, Enterprise)
+codex  # Follow prompts to sign in
+
+# Option 2: API key
+export OPENAI_API_KEY=sk-proj-...
+```
+
+### Verify Installation
+
+```bash
+# Check Codex is installed
+codex --version
+
+# Test review
+codex
+> /review
+```
+
+See `codex-review.md` skill for full Codex documentation.
+
+---
+
 ## CI/CD Integration
 
-### GitHub Actions
+### GitHub Actions - Claude Only
 
 ```yaml
 # .github/workflows/code-review.yml
@@ -202,6 +326,116 @@ jobs:
             echo "❌ Critical issues found"
             exit 1
           fi
+```
+
+### GitHub Actions - Codex Only
+
+```yaml
+# .github/workflows/codex-review.yml
+name: Codex Code Review
+
+on:
+  pull_request:
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Codex Review
+        uses: openai/codex-action@main
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          model: gpt-5.2-codex
+          safety_strategy: drop-sudo
+```
+
+### GitHub Actions - Both Engines
+
+```yaml
+# .github/workflows/dual-review.yml
+name: Dual Code Review
+
+on:
+  pull_request:
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          npx @anthropic-ai/claude-code --print "/code-review" > claude-review.md
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: claude-review
+          path: claude-review.md
+
+  codex-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Codex
+        run: npm install -g @openai/codex
+
+      - name: Codex Review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          codex exec --full-auto --sandbox read-only \
+            --output-last-message codex-review.md \
+            "Review this code for bugs, security issues, and quality problems"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codex-review
+          path: codex-review.md
+
+  combine-reviews:
+    needs: [claude-review, codex-review]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+
+      - name: Combine Reviews
+        run: |
+          echo "## 🔍 Dual Code Review Results" > combined-review.md
+          echo "" >> combined-review.md
+          echo "### Claude Findings" >> combined-review.md
+          cat claude-review/claude-review.md >> combined-review.md
+          echo "" >> combined-review.md
+          echo "### Codex Findings" >> combined-review.md
+          cat codex-review/codex-review.md >> combined-review.md
+
+      - name: Post Combined Review
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const review = fs.readFileSync('combined-review.md', 'utf8');
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: review
+            });
 ```
 
 ---

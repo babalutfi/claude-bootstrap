@@ -393,14 +393,15 @@ Define before you build:
 2. **Atomic todos** with validation criteria and test cases
 3. **Move, don't delete** - Completed todos go to `completed.md` for reference
 
-## Skills Included (44 Skills)
+## Skills Included (50 Skills)
 
 ### Core Skills
 | Skill | Purpose |
 |-------|---------|
 | `base.md` | Universal patterns, constraints, TDD workflow, atomic todos |
 | `iterative-development.md` | Ralph Wiggum loops - self-referential TDD iteration until tests pass |
-| `code-review.md` | Mandatory code reviews via `/code-review` before every commit and deploy |
+| `code-review.md` | Mandatory code reviews via `/code-review` - choose Claude, Codex, or both |
+| `codex-review.md` | OpenAI Codex CLI code review with GPT-5.2-Codex, CI/CD integration |
 | `commit-hygiene.md` | Atomic commits, PR size limits, commit thresholds, stacked PRs |
 | `code-deduplication.md` | Prevent semantic duplication with capability index, check-before-write |
 | `team-coordination.md` | Multi-person projects - shared state, todo claiming, handoffs, conflict prevention |
@@ -446,6 +447,11 @@ Define before you build:
 | `supabase-nextjs.md` | Next.js + Supabase + Drizzle ORM |
 | `supabase-python.md` | FastAPI + Supabase + SQLAlchemy/SQLModel |
 | `supabase-node.md` | Express/Hono + Supabase + Drizzle ORM |
+| `firebase.md` | Firebase Firestore, Auth, Storage, real-time listeners, security rules |
+| `cloudflare-d1.md` | Cloudflare D1 SQLite with Workers, Drizzle ORM, migrations |
+| `aws-dynamodb.md` | AWS DynamoDB single-table design, GSI patterns, SDK v3 |
+| `aws-aurora.md` | AWS Aurora Serverless v2, RDS Proxy, Data API, connection pooling |
+| `azure-cosmosdb.md` | Azure Cosmos DB partition keys, consistency levels, change feed |
 
 ### Content & SEO Skills
 | Skill | Purpose |
@@ -673,7 +679,7 @@ Yes. Skills are markdown files in `.claude/skills/`. Edit or add your own.
 | Frontend | React, Next.js, React Native, Flutter, PWA |
 | Mobile | React Native, Flutter, Android (Java/Kotlin) |
 | Backend | Node.js, Express, FastAPI |
-| Database | Supabase, PostgreSQL, Drizzle, Prisma |
+| Database | Supabase, Firebase, Cloudflare D1, AWS DynamoDB, Aurora, Azure Cosmos DB |
 | Web Tech | PWA (Service Workers, Workbox, Offline-First) |
 | E-commerce | Shopify, WooCommerce, Medusa |
 | Advertising | Reddit Ads API (campaigns, targeting, conversions) |
@@ -707,7 +713,7 @@ Key principles:
 
 See [CHANGELOG.md](CHANGELOG.md) for version history and updates.
 
-**Latest: v2.0.0** - Skills now use folder/SKILL.md structure (breaking change)
+**Latest: v2.1.0** - 50 skills with database diversity, mobile dev, and Codex code review
 
 ## License
 

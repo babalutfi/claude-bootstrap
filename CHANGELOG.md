@@ -6,13 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [Unreleased]
+## [2.1.0] - 2026-01-17
 
 ### Added
-- **Android Java skill** - MVVM architecture, ViewBinding, Espresso testing, GitHub Actions CI (contributed by @tyr4n7)
-- **Android Kotlin skill** - Coroutines, Jetpack Compose, Hilt DI, MockK/Turbine testing (contributed by @tyr4n7)
-- **Flutter skill** - Riverpod state management, Freezed models, go_router, mocktail testing (contributed by @tyr4n7)
-- **Android/Flutter auto-detection** - `/initialize-project` now detects Flutter (pubspec.yaml), Android Java (.java files), and Android Kotlin (.kt files), supporting hybrid projects (contributed by @tyr4n7)
+
+#### Mobile Development (contributed by @tyr4n7)
+- **Android Java skill** - MVVM architecture, ViewBinding, Espresso testing, GitHub Actions CI
+- **Android Kotlin skill** - Coroutines, Jetpack Compose, Hilt DI, MockK/Turbine testing
+- **Flutter skill** - Riverpod state management, Freezed models, go_router, mocktail testing
+- **Android/Flutter auto-detection** - `/initialize-project` now detects Flutter, Android Java, and Android Kotlin projects
+
+#### Database Skills (addresses #7)
+- **Firebase skill** - Firestore, Auth, Storage, real-time listeners, security rules, offline persistence
+- **Cloudflare D1 skill** - Serverless SQLite with Workers, Drizzle ORM integration, migrations
+- **AWS DynamoDB skill** - Single-table design, GSI patterns, SDK v3 TypeScript/Python
+- **AWS Aurora skill** - Serverless v2, RDS Proxy, Data API, connection pooling for Lambda
+- **Azure Cosmos DB skill** - Partition key design, consistency levels, change feed, SDK patterns
+
+#### Code Review Enhancements
+- **Codex Review skill** - OpenAI Codex CLI for code review with GPT-5.2-Codex (88% detection rate)
+- **Code review engine choice** - `/code-review` now lets you choose: Claude, OpenAI Codex, or both engines
+- **Dual engine review mode** - Run both Claude and Codex, compare findings, catch more issues
+- **CI/CD templates** - GitHub Actions workflows for Claude, Codex, and dual-engine reviews
+
+### Changed
+- Total skills increased from 44 to **50 skills**
+- Updated README with new database and mobile skill listings
+
+### Contributors
+- @tyr4n7 - Android Java, Android Kotlin, Flutter skills and auto-detection
+- @johnsfuller - Feature request for database skills (#7)
 
 ---
 
