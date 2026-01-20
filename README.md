@@ -173,6 +173,45 @@ Then retry `/plugin install ralph-loop@claude-plugins-official`.
 docker-compose up -d reddit-ads-optimizer
 ```
 
+## Multi-Repo Workspace Awareness
+
+**Claude Code now understands your entire workspace - monorepo or multi-repo.**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  /analyze-workspace                                          │
+├─────────────────────────────────────────────────────────────┤
+│  Discovers: Modules, dependencies, contracts                 │
+│  Generates: TOPOLOGY.md, CONTRACTS.md, KEY_FILES.md         │
+│  Tracks: API contracts, shared types, cross-repo changes    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Generated context artifacts:**
+
+| Artifact | Purpose |
+|----------|---------|
+| `TOPOLOGY.md` | What modules exist, their roles, tech stacks |
+| `CONTRACTS.md` | API endpoints, shared types, validation status |
+| `DEPENDENCY_GRAPH.md` | Who calls whom, change order |
+| `KEY_FILES.md` | What to load for each context |
+| `CROSS_REPO_INDEX.md` | Search capabilities before reimplementing |
+
+**Contract freshness (automatic):**
+
+| Trigger | Action | Time |
+|---------|--------|------|
+| Session start | Staleness check | ~5s |
+| Post-commit | Auto-sync if contracts changed | ~15s |
+| Pre-push | Validation gate | ~10s |
+
+**Cross-repo change detection:**
+```
+⚠️  CROSS-REPO CHANGE DETECTED
+This change affects: apps/api
+Recommended order: shared-types → backend → frontend
+```
+
 ## Code Reviews (Mandatory Guardrail)
 
 **Every push requires code review. No exceptions.**
@@ -393,7 +432,7 @@ Define before you build:
 2. **Atomic todos** with validation criteria and test cases
 3. **Move, don't delete** - Completed todos go to `completed.md` for reference
 
-## Skills Included (51 Skills)
+## Skills Included (53 Skills)
 
 ### Core Skills
 | Skill | Purpose |
@@ -403,6 +442,7 @@ Define before you build:
 | `code-review.md` | Mandatory code reviews via `/code-review` - choose Claude, Codex, Gemini, or multi-engine |
 | `codex-review.md` | OpenAI Codex CLI code review with GPT-5.2-Codex, CI/CD integration |
 | `gemini-review.md` | Google Gemini CLI code review with Gemini 2.5 Pro, 1M token context |
+| `workspace.md` | Multi-repo workspace awareness, contract tracking, cross-repo context |
 | `commit-hygiene.md` | Atomic commits, PR size limits, commit thresholds, stacked PRs |
 | `code-deduplication.md` | Prevent semantic duplication with capability index, check-before-write |
 | `team-coordination.md` | Multi-person projects - shared state, todo claiming, handoffs, conflict prevention |
@@ -737,7 +777,7 @@ Key principles:
 
 See [CHANGELOG.md](CHANGELOG.md) for version history and updates.
 
-**Latest: v2.3.0** - 52 skills with Gemini code review engine, triple-engine reviews, and 1M token context support
+**Latest: v2.4.0** - 53 skills with multi-repo workspace awareness, contract tracking, and cross-repo context
 
 ## License
 

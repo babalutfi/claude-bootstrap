@@ -6,6 +6,52 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2.4.0] - 2026-01-20
+
+### Added
+
+#### Multi-Repo Workspace Awareness
+- **Workspace skill** - Dynamic multi-repo and monorepo awareness for Claude Code
+  - Workspace topology discovery (monorepo, multi-repo, hybrid detection)
+  - Dependency graph generation (who calls whom)
+  - API contract extraction (OpenAPI, GraphQL, tRPC, TypeScript, Pydantic)
+  - Key file identification with token estimates
+  - Cross-repo capability index (search before reimplementing)
+  - Token budget management (P0-P3 priority allocation)
+
+- **`/analyze-workspace` command** - Full workspace analysis
+  - Phase 1: Topology discovery (~30s)
+  - Phase 2: Module analysis (~60s)
+  - Phase 3: Contract extraction (~45s)
+  - Phase 4: Dependency graph (~30s)
+  - Phase 5: Key file identification (~30s)
+  - Generates TOPOLOGY.md, CONTRACTS.md, DEPENDENCY_GRAPH.md, KEY_FILES.md, CROSS_REPO_INDEX.md
+
+- **`/sync-contracts` command** - Lightweight incremental contract sync
+  - Checks only contract source files (~15s)
+  - Diff mode to preview changes
+  - Validate mode to check consistency
+  - Lightweight mode for hooks
+
+#### Contract Freshness System
+- **Session start hook** - Staleness check (~5s, advisory)
+- **Post-commit hook** - Auto-sync when contracts change (~15s)
+- **Pre-push hook** - Validation gate (~10s, blocking)
+- `.contract-sources` file to track monitored files
+- Freshness indicators: 🟢 Fresh, 🟡 Stale, 🔴 Outdated, ⚠️ Drift
+
+#### Cross-Repo Change Detection
+- Automatic detection when changes affect other modules
+- Impact analysis with recommended action order
+- Breaking change protocol
+
+### Changed
+- Total skills increased from 52 to **53 skills**
+- Added 3 new commands: `/analyze-workspace`, `/sync-contracts`, `/workspace-status`
+- Added 3 workspace hooks for contract freshness
+
+---
+
 ## [2.3.0] - 2026-01-17
 
 ### Added
